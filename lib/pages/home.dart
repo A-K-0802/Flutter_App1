@@ -1,11 +1,29 @@
+import 'package:app_design_1/models/category_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
   const Home({super.key});
 
   @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  List<CategoryModel> catergories = [];
+
+  void _getcategories() {
+    catergories = CategoryModel.getCategories();
+  }
+
+  @override
+  void initState() {
+    _getcategories();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    _getcategories();
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -52,7 +70,84 @@ class Home extends StatelessWidget {
         ],
       ),
       backgroundColor: Colors.white,
-      body: searchbar(),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          searchbar(),
+          SizedBox(
+            height: 40,
+          ),
+          categories()
+        ],
+      ),
+    );
+  }
+
+  Column categories() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 20.0),
+          child: Text(
+            'Category',
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+        Container(
+          height: 120,
+          color: Colors.white,
+          child: ListView.separated(
+              itemCount: catergories.length,
+              scrollDirection: Axis.horizontal,
+              padding: EdgeInsets.only(
+                left: 20,
+                right: 20,
+              ),
+              separatorBuilder: (context, index) => SizedBox(
+                    width: 25,
+                  ),
+              itemBuilder: (context, index) {
+                return Container(
+                  height: 50,
+                  width: 100,
+                  decoration: BoxDecoration(
+                    color: catergories[index].boxcolor,
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Container(
+                        width: 50,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: SvgPicture.asset(catergories[index].iconpath),
+                        ),
+                      ),
+                      Text(
+                        catergories[index].name,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w400,
+                          color: Colors.black,
+                          fontSize: 12,
+                        ),
+                      )
+                    ],
+                  ),
+                );
+              }),
+        ),
+      ],
     );
   }
 
