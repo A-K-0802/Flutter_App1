@@ -2,6 +2,7 @@
 
 import 'package:app_design_1/models/category_model.dart';
 import 'package:app_design_1/models/dietmodel.dart';
+import 'package:app_design_1/models/popular.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -15,6 +16,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   List<CategoryModel> catergories = [];
   List<Dietmodel> diets = [];
+  List<Popular> popular = [];
 
   void _getcategories() {
     catergories = CategoryModel.getCategories();
@@ -27,6 +29,7 @@ class _HomeState extends State<Home> {
   void _getInitInfo() {
     catergories = CategoryModel.getCategories();
     diets = Dietmodel.getdiets();
+    popular = Popular.getpopular();
   }
 
   @override
@@ -86,8 +89,7 @@ class _HomeState extends State<Home> {
         ],
       ),
       backgroundColor: Colors.white,
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      body: ListView(
         children: [
           searchbar(),
           SizedBox(
@@ -97,9 +99,105 @@ class _HomeState extends State<Home> {
           SizedBox(
             height: 40,
           ),
-          dietsection()
+          dietsection(),
+          SizedBox(
+            height: 40,
+          ),
+          popularsection(),
+          SizedBox(
+            height: 40,
+          ),
         ],
       ),
+    );
+  }
+
+  Column popularsection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            'Popular',
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+        SizedBox(
+          height: 15,
+        ),
+        ListView.separated(
+          itemBuilder: (context, index) {
+            return Container(
+              height: 100,
+              decoration: BoxDecoration(
+                  color: popular[index].boxselected
+                      ? Colors.white
+                      : Colors.transparent,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.7),
+                      offset: Offset(0, 10),
+                      blurRadius: 40,
+                      spreadRadius: 0,
+                    )
+                  ]),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  SvgPicture.asset(
+                    popular[index].iconpath,
+                    height: 65,
+                    width: 65,
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        popular[index].name,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black,
+                          fontSize: 13,
+                        ),
+                      ),
+                      Text(
+                        popular[index].calories +
+                            ' | ' +
+                            // ignore: duplicate_ignore
+                            // ignore: prefer_interpolation_to_compose_strings
+                            popular[index].duration +
+                            ' | ' +
+                            popular[index].level,
+                        style: TextStyle(
+                          color: const Color.fromARGB(255, 76, 2, 27),
+                          fontSize: 13,
+                          fontWeight: FontWeight.w300,
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            );
+          },
+          separatorBuilder: (context, index) => SizedBox(
+            height: 25,
+          ),
+          itemCount: popular.length,
+          shrinkWrap: true,
+          padding: EdgeInsets.only(
+            left: 20,
+            right: 20,
+          ),
+        ),
+      ],
     );
   }
 
